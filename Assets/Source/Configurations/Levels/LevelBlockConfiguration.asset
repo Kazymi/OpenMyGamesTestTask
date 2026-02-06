@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f71733230347c41ab4e0a335342617, type: 3}
+  m_Name: LevelBlockConfiguration
+  m_EditorClassIdentifier: 
+  _blocks:
+  - <BlockType>k__BackingField: 1
+    <Prefab>k__BackingField: {fileID: 8468586189891368629, guid: 219315664e80fe24b87009aa5746d7f1, type: 3}
+  - <BlockType>k__BackingField: 2
+    <Prefab>k__BackingField: {fileID: 8468586189891368629, guid: 2f48155735636e2479a86eb0f789f125, type: 3}
+  _objectInterval: {x: 1.57, y: 1.6, z: 0}
