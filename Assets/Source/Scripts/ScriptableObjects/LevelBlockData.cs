@@ -4,5 +4,5 @@ using UnityEngine;
 public class LevelBlockData
 {
     [field: SerializeField] public GameBlockType BlockType { get; private set; }
-    [field: SerializeField] public GameObject Prefab { get; private set; }
+    [field: SerializeField] public MapBlock Prefab { get; private set; }
 }
