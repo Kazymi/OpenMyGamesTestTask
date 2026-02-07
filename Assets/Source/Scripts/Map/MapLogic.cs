@@ -6,6 +6,9 @@ public class MapLogic
     private readonly MapGrid _grid;
     private readonly MapMatchFinder _matchFinder;
     private readonly MapAnimator _animator;
+    private bool _isBusy;
+
+    public bool IsInputLocked => _isBusy;
 
     public MapLogic(MapGrid grid, MapMatchFinder matchFinder, MapAnimator animator)
     {
@@ -16,6 +19,9 @@ public class MapLogic
 
     public bool TrySwipe(SwipeableMapBlock block, Vector2Int direction)
     {
+        if (_isBusy)
+            return false;
+
         var from = block.GridPosition;
         var to = from + direction;
         var isUp = from.y > to.y;
@@ -24,6 +30,7 @@ public class MapLogic
             return false;
         }
 
+        _isBusy = true;
         if (_grid.GetBlock(to.x, to.y) != null)
         {
             _animator.SwapAndAnimate(from, to, OnSwipeAnimationComplete);
@@ -56,6 +63,10 @@ public class MapLogic
         if (removedCount > 0)
         {
             _animator.ApplyGravity(OnLandedAfterMatch);
+        }
+        else
+        {
+            _isBusy = false;
         }
     }
 

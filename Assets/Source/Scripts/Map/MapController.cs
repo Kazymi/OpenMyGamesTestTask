@@ -28,4 +28,6 @@ public class MapController
     {
         return _logic.TrySwipe(block, direction);
     }
+
+    public bool IsInputLocked => _logic.IsInputLocked;
 }

@@ -79,8 +79,12 @@ public class MapGrid
             {
                 var newY = Height - columnBlocks.Count + i;
                 var block = columnBlocks[i];
+                var oldY = block.GridPosition.y;
                 SetBlockAt(x, newY, block);
-                moves.Add((block, x, newY));
+                if (oldY != newY)
+                {
+                    moves.Add((block, x, newY));
+                }
             }
         }
 

@@ -17,7 +17,6 @@ public class MapAnimator
 
     private Tween AnimateTo(MapBlock block, int x, int y, Ease ease = Ease.Linear)
     {
-        //Сюда можно добавьть дом анимки к свайпу, к примеру если это падение баунс, если свайп, то кубик
         if (block == null)
         {
             return DOTween.Sequence();
@@ -58,7 +57,7 @@ public class MapAnimator
         }
 
         if (sequence.Duration() > 0f)
-        {
+        { 
             sequence.OnComplete(onComplete);
         }
         else
