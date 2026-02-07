@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CoreBlockAnimationController
 {
-    private readonly Animator _animator;
     private const float AnimationSpeedMin = 0.7f;
     private const float AnimationSpeedMax = 1.1f;
+
+    private readonly Animator _animator;
 
     public CoreBlockAnimationController(Animator animator)
     {
@@ -28,18 +26,20 @@ public class CoreBlockAnimationController
     {
         if (_animator == null)
         {
-            return 0;
+            return 0f;
         }
         var controller = _animator.runtimeAnimatorController;
-        var clips = controller.animationClips;
-        foreach (AnimationClip clip in clips)
+        if (controller == null)
+        {
+            return 0f;
+        }
+        foreach (var clip in controller.animationClips)
         {
             if (clip.name == animationType.ToString())
             {
                 return clip.length;
             }
         }
-        
         Debug.LogWarning($"Анимация с именем '{animationType}' не найдена!");
         return 0f;
     }

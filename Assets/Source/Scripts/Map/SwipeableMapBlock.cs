@@ -14,6 +14,25 @@ public class SwipeableMapBlock : MapBlock
         _camera = Camera.main;
     }
 
+    private void OnMouseDown()
+    {
+        _pointerDownWorld = PointerWorldPosition();
+    }
+
+    private void OnMouseUp()
+    {
+        if (_mapController == null || _mapController.IsBlockLocked(this))
+        {
+            return;
+        }
+        var deltaPosition = PointerWorldPosition() - _pointerDownWorld;
+        if (TryGetSwipeDirection(deltaPosition, out var direction) == false)
+        {
+            return;
+        }
+        _mapController.TrySwipe(this, direction);
+    }
+
     private Vector3 PointerWorldPosition()
     {
         var screen = Input.mousePosition;
@@ -28,7 +47,6 @@ public class SwipeableMapBlock : MapBlock
         {
             return false;
         }
-
         if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
         {
             direction = delta.x > 0 ? Vector2Int.right : Vector2Int.left;
@@ -37,24 +55,6 @@ public class SwipeableMapBlock : MapBlock
         {
             direction = delta.y > 0 ? Vector2Int.down : Vector2Int.up;
         }
-
         return true;
-    }
-
-    private void OnMouseDown()
-    {
-        _pointerDownWorld = PointerWorldPosition();
-    }
-
-    private void OnMouseUp()
-    {
-        if (_mapController == null || _mapController.IsBlockLocked(this))
-            return;
-
-        var deltaPosition = PointerWorldPosition() - _pointerDownWorld;
-        if (TryGetSwipeDirection(deltaPosition, out var direction) == false)
-            return;
-
-        _mapController.TrySwipe(this, direction);
     }
 }

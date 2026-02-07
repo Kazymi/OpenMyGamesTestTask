@@ -7,7 +7,9 @@ public class GameplayStatePersistence
     public void Save(GameplayStateSnapshot snapshot)
     {
         if (snapshot == null)
+        {
             return;
+        }
         var json = JsonUtility.ToJson(snapshot);
         PlayerPrefs.SetString(PrefsKey, json);
         PlayerPrefs.Save();
@@ -16,7 +18,9 @@ public class GameplayStatePersistence
     public GameplayStateSnapshot Load()
     {
         if (PlayerPrefs.HasKey(PrefsKey) == false)
+        {
             return null;
+        }
         var json = PlayerPrefs.GetString(PrefsKey);
         return JsonUtility.FromJson<GameplayStateSnapshot>(json);
     }

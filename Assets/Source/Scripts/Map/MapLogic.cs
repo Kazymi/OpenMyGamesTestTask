@@ -82,7 +82,9 @@ public class MapLogic
 
         _swipeBlocks.Add(fromBlock);
         if (toBlock != null)
+        {
             _swipeBlocks.Add(toBlock);
+        }
         AddAnimatingBlocks(_swipeBlocks);
     }
 
@@ -152,14 +154,18 @@ public class MapLogic
             {
                 gravityMoves = moves;
                 foreach (var move in moves)
+                {
                     AddAnimatingBlock(move.block);
+                }
             },
             () =>
             {
                 if (gravityMoves != null)
                 {
                     foreach (var move in gravityMoves)
+                    {
                         RemoveAnimatingBlock(move.block);
+                    }
                 }
                 onComplete();
             });

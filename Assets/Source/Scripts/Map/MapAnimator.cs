@@ -16,16 +16,6 @@ public class MapAnimator
         _moveDuration = moveDuration;
     }
 
-    private Tween AnimateTo(MapBlock block, int x, int y, Ease ease = Ease.Linear)
-    {
-        if (block == null)
-        {
-            return DOTween.Sequence();
-        }
-        return block.transform.DOMove(_grid.GetWorldPosition(x, y), _moveDuration).SetEase(ease).SetAutoKill(true)
-            .SetTarget(block.gameObject);
-    }
-
     public void SwapAndAnimate(Vector2Int from, Vector2Int to, TweenCallback onComplete)
     {
         var blockA = _grid.GetBlock(from.x, from.y);
@@ -94,8 +84,20 @@ public class MapAnimator
             {
                 return;
             }
-
             onComplete(count);
         }
+    }
+
+    private Tween AnimateTo(MapBlock block, int x, int y, Ease ease = Ease.Linear)
+    {
+        if (block == null)
+        {
+            return DOTween.Sequence();
+        }
+        return block.transform
+            .DOMove(_grid.GetWorldPosition(x, y), _moveDuration)
+            .SetEase(ease)
+            .SetAutoKill(true)
+            .SetTarget(block.gameObject);
     }
 }

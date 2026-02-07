@@ -22,7 +22,9 @@ public class GameplayStateSnapshot
     public GameBlockType GetCell(int x, int y)
     {
         if (x < 0 || x >= Width || y < 0 || y >= Height)
+        {
             return GameBlockType.None;
+        }
         var index = y * Width + x;
         return index >= 0 && index < Grid.Length ? (GameBlockType)Grid[index] : GameBlockType.None;
     }

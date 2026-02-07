@@ -6,6 +6,8 @@ using Zenject;
 public class GameMapLoader
 {
     private const float DropDelayPerCell = 0.03f;
+    private const float LandingShakeDuration = 0.2f;
+    private const float LandingShakeStrength = 0.3f;
 
     [Inject] private LevelProvider _levelProvider;
     [Inject] private LevelBlockConfiguration _blockConfiguration;
@@ -18,7 +20,9 @@ public class GameMapLoader
     {
         var level = _levelProvider.GetCurrentLevel();
         if (CanLoad(level) == false)
+        {
             return;
+        }
         InitializeMap(level.Width, level.Height, parent);
         SpawnAllBlocks(level, parent);
     }
@@ -26,7 +30,9 @@ public class GameMapLoader
     public void LoadMapFromSnapshot(GameplayStateSnapshot snapshot, Transform parent)
     {
         if (snapshot == null || _blockConfiguration == null)
+        {
             return;
+        }
         InitializeMap(snapshot.Width, snapshot.Height, parent);
         SpawnAllBlocksFromSnapshot(snapshot, parent);
     }
@@ -55,7 +61,6 @@ public class GameMapLoader
                 {
                     continue;
                 }
-
                 SpawnBlock(type, x, y, spawnY, cellIndex, level.Width, level.Height, parent);
                 cellIndex++;
             }
@@ -72,7 +77,9 @@ public class GameMapLoader
             {
                 var type = snapshot.GetCell(x, y);
                 if (type == GameBlockType.None)
+                {
                     continue;
+                }
                 SpawnBlock(type, x, y, spawnY, cellIndex, snapshot.Width, snapshot.Height, parent);
                 cellIndex++;
             }
@@ -98,7 +105,6 @@ public class GameMapLoader
         {
             return pool.Pull();
         }
-
         pool = CreatePool(type, parent);
         _pools[type] = pool;
         return pool.Pull();
@@ -120,7 +126,9 @@ public class GameMapLoader
         block.SetOrder(CalculateSortingOrder(x, y, width, height));
         _mapController.RegisterBlock(x, y, block, type);
         if (block is SwipeableMapBlock swipeable)
+        {
             swipeable.Init(_mapController);
+        }
     }
 
     private void AnimateBlockDrop(MapBlock block, Vector3 targetPosition, int cellIndex)
@@ -137,10 +145,11 @@ public class GameMapLoader
 
     private void PlayLandingAnimation(MapBlock block)
     {
-        block.transform.DOShakeScale(0.2f, 0.3f).SetAutoKill(true).SetTarget(block.gameObject).OnComplete(() =>
-        {
-            block.transform.localScale = Vector3.one;
-        });
+        block.transform
+            .DOShakeScale(LandingShakeDuration, LandingShakeStrength)
+            .SetAutoKill(true)
+            .SetTarget(block.gameObject)
+            .OnComplete(() => block.transform.localScale = Vector3.one);
     }
 
     private float CalculateSpawnY(int height, float originY)

@@ -10,6 +10,20 @@ public class MapController
     public event Action OnLevelFailed;
     public event Action OnTurnCompleted;
 
+    public void Init(int width, int height, Vector3 origin, Vector3 interval, float moveDuration)
+    {
+        //Ужасный монгстр TODO отрефакторить
+        ReturnAllBlocksToPool();
+        _grid = new MapGrid();
+        _grid.Init(width, height, origin, interval);
+        var matchFinder = new MapMatchFinder();
+        var animator = new MapAnimator(_grid, moveDuration);
+        _logic = new MapLogic(_grid, matchFinder, animator,
+            () => OnLevelCleared?.Invoke(),
+            () => OnLevelFailed?.Invoke(),
+            () => OnTurnCompleted?.Invoke());
+    }
+
     public void ReturnAllBlocksToPool()
     {
         if (_grid == null)
@@ -28,19 +42,6 @@ public class MapController
                 }
             }
         }
-    }
-
-    public void Init(int width, int height, Vector3 origin, Vector3 interval, float moveDuration)
-    {
-        ReturnAllBlocksToPool();
-        _grid = new MapGrid();
-        _grid.Init(width, height, origin, interval);
-        var matchFinder = new MapMatchFinder();
-        var animator = new MapAnimator(_grid, moveDuration);
-        _logic = new MapLogic(_grid, matchFinder, animator,
-            () => OnLevelCleared?.Invoke(),
-            () => OnLevelFailed?.Invoke(),
-            () => OnTurnCompleted?.Invoke());
     }
 
     public void RegisterBlock(int x, int y, MapBlock block, GameBlockType blockType)
@@ -65,8 +66,6 @@ public class MapController
 
     public (int width, int height, int[] grid) GetGridStateSnapshot()
     {
-        if (_grid == null)
-            return (0, 0, null);
-        return (_grid.Width, _grid.Height, _grid.GetSnapshotGrid());
+        return _grid == null ? (0, 0, null) : (_grid.Width, _grid.Height, _grid.GetSnapshotGrid());
     }
 }

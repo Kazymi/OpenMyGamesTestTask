@@ -22,8 +22,6 @@ public class LoadSaveService : IInitializable, IDisposable
 
     public void Dispose()
     {
-        if (_mapController == null)
-            return;
         _mapController.OnTurnCompleted -= SaveCurrentState;
     }
 
@@ -41,7 +39,9 @@ public class LoadSaveService : IInitializable, IDisposable
     {
         var (width, height, grid) = _mapController.GetGridStateSnapshot();
         if (width == 0 || height == 0 || grid == null)
+        {
             return;
+        }
         var snapshot = new GameplayStateSnapshot(_levelProvider.CurrentIndex, width, height, grid);
         _persistence.Save(snapshot);
     }

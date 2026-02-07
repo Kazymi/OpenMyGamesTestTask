@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MapBlock : MonoPooled
 {
+    [Header("Visual")]
     [SerializeField] private SpriteRenderer _mapBlockImage;
 
     private int _gridX;

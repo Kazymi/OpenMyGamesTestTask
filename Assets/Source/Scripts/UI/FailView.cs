@@ -3,14 +3,18 @@ using DG.Tweening;
 using UnityEngine;
 using TMPro;
 
-    //В теории не обязательно должен быть Mono, но просто чтоб не растить один класс инсталлера с кучей таких вот view обычно делаю его так, если крит легко поправить)
-    //Awake заменить на интерфейс IInitializable и сделать класс [Serializable], затем через инсталлер билдить его
+// В теории не обязательно Mono; сделан так для удобства биндинга в инсталлере. При необходимости можно заменить Awake на IInitializable.
 public class FailView : MonoBehaviour, IPresenterView
 {
+    [Header("UI References")]
     [SerializeField] private GameObject _root;
     [SerializeField] private TMP_Text _messageText;
+
+    [Header("Animation")]
     [SerializeField] private float _animationDuration = 0.5f;
     [SerializeField] private Ease _scaleEase = Ease.OutBack;
+
+    private Tween _showTween;
 
     private void Awake()
     {
@@ -20,13 +24,18 @@ public class FailView : MonoBehaviour, IPresenterView
         }
     }
 
+    private void OnDestroy()
+    {
+        _showTween?.Kill();
+    }
+
     public void Show(string message, Action onAnimationComplete)
     {
+        _showTween?.Kill();
         if (_messageText != null)
         {
             _messageText.text = message;
         }
-
         if (_root != null)
         {
             _root.SetActive(true);
@@ -35,8 +44,11 @@ public class FailView : MonoBehaviour, IPresenterView
         if (_messageText != null)
         {
             _messageText.transform.localScale = Vector3.zero;
-            _messageText.transform.DOScale(Vector3.one, _animationDuration).SetEase(_scaleEase)
-                .OnComplete(() => onAnimationComplete?.Invoke());
+            _showTween = _messageText.transform
+                .DOScale(Vector3.one, _animationDuration)
+                .SetEase(_scaleEase)
+                .OnComplete(() => onAnimationComplete?.Invoke())
+                .SetTarget(_messageText.gameObject);
         }
         else
         {

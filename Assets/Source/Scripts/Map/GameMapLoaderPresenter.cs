@@ -5,6 +5,7 @@ using Zenject;
 public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializable, IDisposable
 {
     private const int LevelIndexAfterEndOfList = 0;
+
     private readonly GameMapLoader _gameMapLoader;
     private readonly LevelProvider _levelProvider;
     private readonly MapController _mapController;
@@ -40,13 +41,25 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
 
     public void Dispose()
     {
-        if (_mapController == null)
-        {
-            return;
-        }
-
         _mapController.OnLevelCleared -= OnLevelCleared;
         _mapController.OnLevelFailed -= OnLevelFailed;
+    }
+
+    public bool LoadNextLevel()
+    {
+        if (_levelProvider.AdvanceToNextLevel() == false)
+        {
+            return false;
+        }
+        _gameMapLoader.LoadMap(View.MapStartPositionTransform);
+        _loadSaveService.SaveCurrentState();
+        return true;
+    }
+
+    public void LoadCurrentLevel()
+    {
+        _gameMapLoader.LoadMap(View.MapStartPositionTransform);
+        _loadSaveService.SaveCurrentState();
     }
 
     private void OnLevelFailed()
@@ -67,20 +80,5 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
             _levelProvider.SetLevelIndex(LevelIndexAfterEndOfList);
             LoadCurrentLevel();
         }
-    }
-
-    public bool LoadNextLevel()
-    {
-        if (_levelProvider.AdvanceToNextLevel() == false)
-            return false;
-        _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-        _loadSaveService.SaveCurrentState();
-        return true;
-    }
-
-    public void LoadCurrentLevel()
-    {
-        _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-        _loadSaveService.SaveCurrentState();
     }
 }

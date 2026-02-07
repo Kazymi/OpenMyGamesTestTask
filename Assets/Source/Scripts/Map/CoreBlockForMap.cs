@@ -3,13 +3,12 @@ using DG.Tweening;
 using KazymiStateMachine;
 using KazymiStateMachine.Conditions;
 using UnityEngine;
-using Random = UnityEngine.Random;
-
 
 //Чуть поясню почему я добавил именно StateMachine. На опыте скажу что обычно такие обьекты имеют больше 2х состояний, это просто заготовка на будущее
 //если в будущем планируется расширение, к примеру добавить новое состояние, это будет сделать в разы прощею. Просто опыт и попытка решить проблемы которые возникали у меня раньше. 
 public class CoreBlockForMap : SwipeableMapBlock
 {
+    [Header("Animation")]
     [SerializeField] private Animator _blockAnimator;
 
     private CoreBlockAnimationController _coreBlockAnimationController;
@@ -26,19 +25,12 @@ public class CoreBlockForMap : SwipeableMapBlock
 
     private void OnEnable()
     {
-        MatchedEvent += OnMatchedHandler;
+        MatchedEvent += OnMatched;
     }
 
     private void OnDisable()
     {
-        MatchedEvent -= OnMatchedHandler;
-    }
-
-    private void OnMatchedHandler(Action onCompleted)
-    {
-        _stateMachine.SetState(_destroyState);
-        DOVirtual.DelayedCall(_coreBlockAnimationController.GetAnimationDuration(CoreBlockAnimationType.Destroy),
-            () => onCompleted?.Invoke()).SetTarget(gameObject);
+        MatchedEvent -= OnMatched;
     }
 
     public override void ReturnToPool()
@@ -52,11 +44,19 @@ public class CoreBlockForMap : SwipeableMapBlock
         _stateMachine.Tick();
     }
 
+    private void OnMatched(Action onCompleted)
+    {
+        _stateMachine.SetState(_destroyState);
+        DOVirtual
+            .DelayedCall(_coreBlockAnimationController.GetAnimationDuration(CoreBlockAnimationType.Destroy),
+                () => onCompleted?.Invoke())
+            .SetTarget(gameObject);
+    }
+
     private void InitializeStateMachine()
     {
         _idleState = new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Idle, false);
-        _destroyState =
-            new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Destroy, false);
+        _destroyState = new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Destroy, false);
         _stateMachine = new StateMachine(_idleState);
     }
 }

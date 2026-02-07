@@ -3,6 +3,7 @@ using Zenject;
 
 public class PresenterInstaller : MonoInstaller<PresenterInstaller>
 {
+    [Header("Views")]
     [SerializeField] private FailView _failView;
     [SerializeField] private GameMenuView _gameMenuView;
     [SerializeField] private GameMapLoaderView _gameMapLoaderView;

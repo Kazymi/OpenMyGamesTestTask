@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Zenject;
 
 public class GameMenuPresenter : Presenter<GameMenuView>, IInitializable, IDisposable
@@ -10,28 +10,27 @@ public class GameMenuPresenter : Presenter<GameMenuView>, IInitializable, IDispo
         _gameMapLoaderPresenter = gameMapLoaderPresenter;
     }
 
-    private void RestartButtonClickedHandler()
+    public void Initialize()
+    {
+        View.RestartGameButton.onClick.AddListener(OnRestartClicked);
+        View.NextGameButton.onClick.AddListener(OnNextLevelClicked);
+    }
+
+    public void Dispose()
+    {
+        View.RestartGameButton.onClick.RemoveListener(OnRestartClicked);
+        View.NextGameButton.onClick.RemoveListener(OnNextLevelClicked);
+    }
+
+    private void OnRestartClicked()
     {
         View.PlayPulse(View.RestartGameButton.transform);
         _gameMapLoaderPresenter.LoadCurrentLevel();
     }
 
-    private void NextLevelButtonClickedHandler()
+    private void OnNextLevelClicked()
     {
         View.PlayPulse(View.NextGameButton.transform);
         _gameMapLoaderPresenter.LoadNextLevel();
-    }
-
-
-    public void Initialize()
-    {
-        View.RestartGameButton.onClick.AddListener(RestartButtonClickedHandler);
-        View.NextGameButton.onClick.AddListener(NextLevelButtonClickedHandler);
-    }
-
-    public void Dispose()
-    {
-        View.RestartGameButton.onClick.RemoveListener(RestartButtonClickedHandler);
-        View.NextGameButton.onClick.RemoveListener(NextLevelButtonClickedHandler);
     }
 }

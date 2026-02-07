@@ -10,7 +10,9 @@ public class LevelListConfiguration : ScriptableObject
     public LevelConfiguration GetLevel(int index)
     {
         if (_levels == null || index < 0 || index >= _levels.Length)
+        {
             return null;
+        }
         return _levels[index];
     }
 }

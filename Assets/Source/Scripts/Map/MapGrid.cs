@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 public class MapGrid
 {
@@ -52,40 +52,48 @@ public class MapGrid
     public bool IsEmpty()
     {
         for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
-            if (_blocks[x, y] != null)
-                return false;
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                if (_blocks[x, y] != null)
+                {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
-    /// <summary>True, если какой-то тип блоков представлен 2 или менее блоками (невозможно собрать матч из 3).</summary>
+    //True, если какой-то тип блоков представлен 2 или менее блоками (невозможно собрать матч из 3)
+    //Вроде как стандартная практика в матч играх, но не уверен поэтому TODO
     public bool HasAnyTypeWithCountTwoOrLess()
     {
         var countByType = new Dictionary<GameBlockType, int>();
         for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
         {
-            var block = _blocks[x, y];
-            if (block == null || block.BlockType == GameBlockType.None)
-                continue;
-            var type = block.BlockType;
-            countByType[type] = countByType.TryGetValue(type, out var c) ? c + 1 : 1;
+            for (var y = 0; y < Height; y++)
+            {
+                var block = _blocks[x, y];
+                if (block == null || block.BlockType == GameBlockType.None)
+                {
+                    continue;
+                }
+                var type = block.BlockType;
+                countByType[type] = countByType.TryGetValue(type, out var c) ? c + 1 : 1;
+            }
         }
-
-        foreach (var count in countByType.Values)
-            if (count <= 2)
-                return true;
-        return false;
+        return countByType.Values.Any(count => count <= 2);
     }
 
     public void SetBlockAt(int x, int y, MapBlock block)
     {
         _blocks[x, y] = block;
-        if (block != null)
+        if (block == null)
         {
-            block.SetGridPosition(x, y);
-            block.SetOrder((Height - 1 - y) * Width + x);
+            return;
         }
+        block.SetGridPosition(x, y);
+        block.SetOrder((Height - 1 - y) * Width + x);
     }
 
     public List<(MapBlock block, int x, int y)> ApplyGravityAndSetToData()
@@ -97,11 +105,12 @@ public class MapGrid
             for (var y = 0; y < Height; y++)
             {
                 var block = _blocks[x, y];
-                if (block != null)
+                if (block == null)
                 {
-                    columnBlocks.Add(block);
-                    _blocks[x, y] = null;
+                    continue;
                 }
+                columnBlocks.Add(block);
+                _blocks[x, y] = null;
             }
 
             for (var i = 0; i < columnBlocks.Count; i++)
@@ -139,10 +148,12 @@ public class MapGrid
     {
         var result = new int[Width * Height];
         for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
         {
-            var block = _blocks[x, y];
-            result[y * Width + x] = block == null ? (int)GameBlockType.None : (int)block.BlockType;
+            for (var y = 0; y < Height; y++)
+            {
+                var block = _blocks[x, y];
+                result[y * Width + x] = block == null ? (int)GameBlockType.None : (int)block.BlockType;
+            }
         }
         return result;
     }
