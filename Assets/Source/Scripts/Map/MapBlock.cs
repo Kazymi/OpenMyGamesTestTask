@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 
 public class MapBlock : MonoPooled
@@ -39,5 +40,11 @@ public class MapBlock : MonoPooled
             return;
         }
         MatchedEvent.Invoke(onComplete);
+    }
+
+    public override void ReturnToPool()
+    {
+        DOTween.Kill(gameObject);
+        base.ReturnToPool();
     }
 }

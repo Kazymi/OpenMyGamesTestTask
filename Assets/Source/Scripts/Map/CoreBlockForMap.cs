@@ -38,7 +38,13 @@ public class CoreBlockForMap : SwipeableMapBlock
     {
         _stateMachine.SetState(_destroyState);
         DOVirtual.DelayedCall(_coreBlockAnimationController.GetAnimationDuration(CoreBlockAnimationType.Destroy),
-            () => onCompleted?.Invoke());
+            () => onCompleted?.Invoke()).SetTarget(gameObject);
+    }
+
+    public override void ReturnToPool()
+    {
+        _stateMachine.SetState(_idleState);
+        base.ReturnToPool();
     }
 
     private void Update()

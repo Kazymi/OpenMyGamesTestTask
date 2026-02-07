@@ -48,15 +48,13 @@ public class SwipeableMapBlock : MapBlock
 
     private void OnMouseUp()
     {
-        if (_mapController == null)
-        {
+        if (_mapController == null || _mapController.IsBlockLocked(this))
             return;
-        }
+
         var deltaPosition = PointerWorldPosition() - _pointerDownWorld;
         if (TryGetSwipeDirection(deltaPosition, out var direction) == false)
-        {
             return;
-        }
+
         _mapController.TrySwipe(this, direction);
     }
 }

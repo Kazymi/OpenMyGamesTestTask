@@ -9,19 +9,31 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
     private readonly LevelProvider _levelProvider;
     private readonly MapController _mapController;
     private readonly FailScreenPresenter _failScreenPresenter;
+    private readonly LoadSaveService _loadSaveService;
 
     public GameMapLoaderPresenter(GameMapLoaderView view, GameMapLoader gameMapLoader, LevelProvider levelProvider,
-        MapController mapController, FailScreenPresenter failScreenPresenter) : base(view)
+        MapController mapController, FailScreenPresenter failScreenPresenter, LoadSaveService loadSaveService) : base(view)
     {
         _gameMapLoader = gameMapLoader;
         _levelProvider = levelProvider;
         _mapController = mapController;
         _failScreenPresenter = failScreenPresenter;
+        _loadSaveService = loadSaveService;
     }
 
     public void Initialize()
     {
-        LoadCurrentLevel();
+        var savedState = _loadSaveService.TryGetSavedState();
+        if (savedState != null)
+        {
+            _levelProvider.SetLevelIndex(savedState.LevelIndex);
+            _gameMapLoader.LoadMapFromSnapshot(savedState, View.MapStartPositionTransform);
+            _loadSaveService.SaveCurrentState();
+        }
+        else
+        {
+            LoadCurrentLevel();
+        }
         _mapController.OnLevelCleared += OnLevelCleared;
         _mapController.OnLevelFailed += OnLevelFailed;
     }
@@ -32,10 +44,11 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
         {
             return;
         }
+
         _mapController.OnLevelCleared -= OnLevelCleared;
         _mapController.OnLevelFailed -= OnLevelFailed;
     }
-    
+
     private void OnLevelFailed()
     {
         _failScreenPresenter.Show(LoadCurrentLevel);
@@ -43,10 +56,11 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
 
     private void OnLevelCleared()
     {
+        _loadSaveService.ClearSavedState();
         if (_levelProvider.AdvanceToNextLevel())
         {
-            ClearMap();
             _gameMapLoader.LoadMap(View.MapStartPositionTransform);
+            _loadSaveService.SaveCurrentState();
         }
         else
         {
@@ -58,22 +72,15 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
     public bool LoadNextLevel()
     {
         if (_levelProvider.AdvanceToNextLevel() == false)
-        {
             return false;
-        }
-
-        ClearMap();
         _gameMapLoader.LoadMap(View.MapStartPositionTransform);
+        _loadSaveService.SaveCurrentState();
         return true;
     }
 
     public void LoadCurrentLevel()
     {
-        ClearMap();
         _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-    }
-
-    private void ClearMap()
-    {
+        _loadSaveService.SaveCurrentState();
     }
 }

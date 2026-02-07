@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -36,6 +37,7 @@ public class MapAnimator
         var sequence = DOTween.Sequence();
         sequence.Join(AnimateTo(blockA, to.x, to.y));
         sequence.Join(AnimateTo(blockB, from.x, from.y));
+        sequence.SetTarget(blockA.gameObject);
         sequence.OnComplete(onComplete);
     }
 
@@ -47,9 +49,10 @@ public class MapAnimator
         AnimateTo(block, to.x, to.y).OnComplete(onComplete);
     }
 
-    public void ApplyGravity(TweenCallback onComplete)
+    public void ApplyGravity(Action<List<(MapBlock block, int x, int y)>> onMovesReady, TweenCallback onComplete)
     {
         var moves = _grid.ApplyGravityAndSetToData();
+        onMovesReady?.Invoke(moves);
         var sequence = DOTween.Sequence();
         foreach (var (block, x, y) in moves)
         {
@@ -57,7 +60,11 @@ public class MapAnimator
         }
 
         if (sequence.Duration() > 0f)
-        { 
+        {
+            if (moves.Count > 0)
+            {
+                sequence.SetTarget(moves[0].block.gameObject);
+            }
             sequence.OnComplete(onComplete);
         }
         else
@@ -66,11 +73,12 @@ public class MapAnimator
         }
     }
 
-    public void AnimateMatchReturnPool(List<MapBlock> listBlocks, System.Action<int> onComplete)
+    public void AnimateMatchReturnPool(List<MapBlock> listBlocks, Action<int> onComplete)
     {
         var count = listBlocks.Count;
         var pending = count;
         var raiseSequence = DOTween.Sequence();
+        raiseSequence.SetTarget(listBlocks[0].gameObject);
         raiseSequence.AppendCallback(() => listBlocks[0].RaiseMatched(TryFinish));
         for (var i = 1; i < listBlocks.Count; i++)
         {

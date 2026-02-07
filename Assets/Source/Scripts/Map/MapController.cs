@@ -8,17 +8,25 @@ public class MapController
 
     public event Action OnLevelCleared;
     public event Action OnLevelFailed;
+    public event Action OnTurnCompleted;
 
     public void ReturnAllBlocksToPool()
     {
         if (_grid == null)
-            return;
-        for (var x = 0; x < _grid.Width; x++)
-        for (var y = 0; y < _grid.Height; y++)
         {
-            var block = _grid.GetBlock(x, y);
-            if (block != null)
-                block.ReturnToPool();
+            return;
+        }
+
+        for (var x = 0; x < _grid.Width; x++)
+        {
+            for (var y = 0; y < _grid.Height; y++)
+            {
+                var block = _grid.GetBlock(x, y);
+                if (block != null)
+                {
+                    block.ReturnToPool();
+                }
+            }
         }
     }
 
@@ -31,7 +39,8 @@ public class MapController
         var animator = new MapAnimator(_grid, moveDuration);
         _logic = new MapLogic(_grid, matchFinder, animator,
             () => OnLevelCleared?.Invoke(),
-            () => OnLevelFailed?.Invoke());
+            () => OnLevelFailed?.Invoke(),
+            () => OnTurnCompleted?.Invoke());
     }
 
     public void RegisterBlock(int x, int y, MapBlock block, GameBlockType blockType)
@@ -49,5 +58,15 @@ public class MapController
         return _logic.TrySwipe(block, direction);
     }
 
-    public bool IsInputLocked => _logic.IsInputLocked;
+    public bool IsBlockLocked(MapBlock block)
+    {
+        return _logic.IsBlockLocked(block);
+    }
+
+    public (int width, int height, int[] grid) GetGridStateSnapshot()
+    {
+        if (_grid == null)
+            return (0, 0, null);
+        return (_grid.Width, _grid.Height, _grid.GetSnapshotGrid());
+    }
 }

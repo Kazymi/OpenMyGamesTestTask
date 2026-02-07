@@ -134,4 +134,16 @@ public class MapGrid
             block.ReturnToPool();
         }
     }
+
+    public int[] GetSnapshotGrid()
+    {
+        var result = new int[Width * Height];
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+        {
+            var block = _blocks[x, y];
+            result[y * Width + x] = block == null ? (int)GameBlockType.None : (int)block.BlockType;
+        }
+        return result;
+    }
 }
