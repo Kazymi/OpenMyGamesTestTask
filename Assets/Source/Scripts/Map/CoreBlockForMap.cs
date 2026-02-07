@@ -17,8 +17,9 @@ public class CoreBlockForMap : SwipeableMapBlock
     private State _destroyState;
     private StateMachine _stateMachine;
 
-    private void Awake()
+    public override void Initialize()
     {
+        base.Initialize();
         _coreBlockAnimationController = new CoreBlockAnimationController(_blockAnimator);
         InitializeStateMachine();
     }
@@ -26,6 +27,11 @@ public class CoreBlockForMap : SwipeableMapBlock
     private void OnEnable()
     {
         MatchedEvent += OnMatchedHandler;
+    }
+
+    private void OnDisable()
+    {
+        MatchedEvent -= OnMatchedHandler;
     }
 
     private void OnMatchedHandler(Action onCompleted)
@@ -43,7 +49,8 @@ public class CoreBlockForMap : SwipeableMapBlock
     private void InitializeStateMachine()
     {
         _idleState = new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Idle, false);
-        _destroyState = new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Destroy, false);
+        _destroyState =
+            new CoreBlockAnimationState(_coreBlockAnimationController, CoreBlockAnimationType.Destroy, false);
         _stateMachine = new StateMachine(_idleState);
     }
 }

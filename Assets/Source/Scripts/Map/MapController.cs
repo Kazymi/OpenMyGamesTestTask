@@ -9,8 +9,22 @@ public class MapController
     public event Action OnLevelCleared;
     public event Action OnLevelFailed;
 
+    public void ReturnAllBlocksToPool()
+    {
+        if (_grid == null)
+            return;
+        for (var x = 0; x < _grid.Width; x++)
+        for (var y = 0; y < _grid.Height; y++)
+        {
+            var block = _grid.GetBlock(x, y);
+            if (block != null)
+                block.ReturnToPool();
+        }
+    }
+
     public void Init(int width, int height, Vector3 origin, Vector3 interval, float moveDuration)
     {
+        ReturnAllBlocksToPool();
         _grid = new MapGrid();
         _grid.Init(width, height, origin, interval);
         var matchFinder = new MapMatchFinder();

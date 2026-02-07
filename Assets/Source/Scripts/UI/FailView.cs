@@ -3,7 +3,9 @@ using DG.Tweening;
 using UnityEngine;
 using TMPro;
 
-public class FailPresenterView : MonoBehaviour, IPresenterView
+    //В теории не обязательно должен быть Mono, но просто чтоб не растить один класс инсталлера с кучей таких вот view обычно делаю его так, если крит легко поправить)
+    //Awake заменить на интерфейс IInitializable и сделать класс [Serializable], затем через инсталлер билдить его
+public class FailView : MonoBehaviour, IPresenterView
 {
     [SerializeField] private GameObject _root;
     [SerializeField] private TMP_Text _messageText;

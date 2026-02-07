@@ -1,12 +1,12 @@
 using System;
 using DG.Tweening;
 
-public class FailScreenPresenter : Presenter<FailPresenterView>
+public class FailScreenPresenter : Presenter<FailView>
 {
     private const float DelayBeforeReload = 1.5f;
     private const string FailMessage = "Fail! Restart";
 
-    public FailScreenPresenter(FailPresenterView view) : base(view)
+    public FailScreenPresenter(FailView view) : base(view)
     {
     }
 

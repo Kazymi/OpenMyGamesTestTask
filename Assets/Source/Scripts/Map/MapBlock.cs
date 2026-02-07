@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class MapBlock : MonoBehaviour
+public class MapBlock : MonoPooled
 {
     [SerializeField] private SpriteRenderer _mapBlockImage;
 

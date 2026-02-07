@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using Zenject;
@@ -9,6 +10,9 @@ public class GameMapLoader
     [Inject] private LevelProvider _levelProvider;
     [Inject] private LevelBlockConfiguration _blockConfiguration;
     [Inject] private MapController _mapController;
+    [Inject] private DiContainer _container;
+
+    private readonly Dictionary<GameBlockType, IPool<MapBlock>> _mapBlockPools = new();
 
     public void LoadMap(Transform parent)
     {
@@ -34,15 +38,20 @@ public class GameMapLoader
                 {
                     continue;
                 }
-                var prefab = _blockConfiguration.GetPrefab(blockType);
-                if (prefab == null)
+
+                if (_mapBlockPools.ContainsKey(blockType) == false)
                 {
-                    continue;
+                    var prefab = _blockConfiguration.GetPrefab(blockType);
+                    var factory = _container.Instantiate<FactoryMonoDIObject<MapBlock>>();
+                    factory.Initialize(prefab.gameObject, parent);
+                    _mapBlockPools.Add(blockType, new Pool<MapBlock>(factory));
                 }
 
                 var targetPosition = _mapController.GetWorldPosition(x, y);
                 var spawnPosition = new Vector3(targetPosition.x, spawnY, targetPosition.z);
-                var instance = Object.Instantiate(prefab, spawnPosition, Quaternion.identity, parent);
+                var instance = _mapBlockPools[blockType].Pull();
+                instance.transform.position = spawnPosition;
+                instance.transform.rotation = Quaternion.identity;
                 instance.SetOrder((height - 1 - y) * width + x);
                 _mapController.RegisterBlock(x, y, instance, blockType);
                 if (instance is SwipeableMapBlock swipeable)
@@ -51,11 +60,13 @@ public class GameMapLoader
                 }
 
                 var delay = cellIndex * DropDelayPerCell;
-                instance.transform.DOMove(targetPosition, fallDuration).SetDelay(delay).SetEase(Ease.InCubic).OnComplete(
-                    () =>
-                    {
-                        instance.transform.DOShakeScale(0.2f, 0.3f);
-                    });
+                instance.transform.DOMove(targetPosition, fallDuration).SetDelay(delay).SetEase(Ease.InCubic)
+                    .OnComplete(
+                        () =>
+                        {
+                            instance.transform.DOShakeScale(0.2f, 0.3f).SetAutoKill(true)
+                                .SetTarget(instance.gameObject);
+                        }).SetAutoKill(true).SetTarget(instance.gameObject);
                 cellIndex++;
             }
         }

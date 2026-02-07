@@ -66,7 +66,7 @@ public class MapAnimator
         }
     }
 
-    public void AnimateMatchDestroy(List<MapBlock> listBlocks, System.Action<int> onComplete)
+    public void AnimateMatchReturnPool(List<MapBlock> listBlocks, System.Action<int> onComplete)
     {
         var count = listBlocks.Count;
         var pending = count;

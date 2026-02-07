@@ -90,9 +90,9 @@ public class MapLogic
         }
 
         var listBlocks = new List<MapBlock>(matched);
-        _animator.AnimateMatchDestroy(listBlocks, destroyedCount =>
+        _animator.AnimateMatchReturnPool(listBlocks, destroyedCount =>
         {
-            _grid.RemoveBlocksAndDestroy(listBlocks);
+            _grid.RemoveBlocksAndReturnPool(listBlocks);
             onComplete(destroyedCount);
         });
     }

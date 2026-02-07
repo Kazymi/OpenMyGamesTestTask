@@ -7,10 +7,10 @@ public class MapGrid
     private Vector3 _origin;
     private Vector3 _interval;
     private MapBlock[,] _blocks;
-    
+
     public int Width { get; private set; }
-    public int Height{ get; private set; }
-    
+    public int Height { get; private set; }
+
     public void Init(int width, int height, Vector3 origin, Vector3 interval)
     {
         Width = width;
@@ -36,7 +36,7 @@ public class MapGrid
     {
         var positionX = _origin.x + x * _interval.x;
         var positionY = _origin.y + (Height - 1 - y) * _interval.y;
-        return new Vector3(positionX,positionY, _origin.z);
+        return new Vector3(positionX, positionY, _origin.z);
     }
 
     public MapBlock GetBlock(int x, int y)
@@ -71,6 +71,7 @@ public class MapGrid
             var type = block.BlockType;
             countByType[type] = countByType.TryGetValue(type, out var c) ? c + 1 : 1;
         }
+
         foreach (var count in countByType.Values)
             if (count <= 2)
                 return true;
@@ -86,7 +87,7 @@ public class MapGrid
             block.SetOrder((Height - 1 - y) * Width + x);
         }
     }
-    
+
     public List<(MapBlock block, int x, int y)> ApplyGravityAndSetToData()
     {
         var moves = new List<(MapBlock, int, int)>();
@@ -119,7 +120,7 @@ public class MapGrid
         return moves;
     }
 
-    public void RemoveBlocksAndDestroy(IEnumerable<MapBlock> blocks)
+    public void RemoveBlocksAndReturnPool(IEnumerable<MapBlock> blocks)
     {
         foreach (var block in blocks)
         {
@@ -127,9 +128,10 @@ public class MapGrid
             {
                 continue;
             }
+
             var position = block.GridPosition;
             _blocks[position.x, position.y] = null;
-            GameObject.Destroy(block.gameObject);
+            block.ReturnToPool();
         }
     }
 }

@@ -38,7 +38,7 @@ public class LevelProvider
             return;
         _currentIndex = index;
     }
-
+    
     public void ResetToFirstLevel()
     {
         _currentIndex = 0;
