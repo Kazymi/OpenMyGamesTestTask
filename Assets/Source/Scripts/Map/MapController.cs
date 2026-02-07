@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MapController
@@ -5,13 +6,18 @@ public class MapController
     private MapGrid _grid;
     private MapLogic _logic;
 
+    public event Action OnLevelCleared;
+    public event Action OnLevelFailed;
+
     public void Init(int width, int height, Vector3 origin, Vector3 interval, float moveDuration)
     {
         _grid = new MapGrid();
         _grid.Init(width, height, origin, interval);
         var matchFinder = new MapMatchFinder();
         var animator = new MapAnimator(_grid, moveDuration);
-        _logic = new MapLogic(_grid, matchFinder, animator);
+        _logic = new MapLogic(_grid, matchFinder, animator,
+            () => OnLevelCleared?.Invoke(),
+            () => OnLevelFailed?.Invoke());
     }
 
     public void RegisterBlock(int x, int y, MapBlock block, GameBlockType blockType)

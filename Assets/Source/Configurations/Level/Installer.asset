@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5665cbb9a1a07974b8ba050aed2e5f26, type: 3}
   m_Name: Installer
   m_EditorClassIdentifier: 
-  _levelConfiguration: {fileID: 11400000, guid: 97a6dcbaa8e90fe4ca52d3ea07afb596, type: 2}
+  _levelList: {fileID: 11400000, guid: fd940bb1a04145b4a8ad901f7e4fbffe, type: 2}
   _blockConfiguration: {fileID: 11400000, guid: 88653c56e2d26f24e8d2ff6bfe04e2c6, type: 2}

@@ -6,15 +6,20 @@ public class MapLogic
     private readonly MapGrid _grid;
     private readonly MapMatchFinder _matchFinder;
     private readonly MapAnimator _animator;
+    private readonly System.Action _onLevelCleared;
+    private readonly System.Action _onLevelFailed;
     private bool _isBusy;
 
     public bool IsInputLocked => _isBusy;
 
-    public MapLogic(MapGrid grid, MapMatchFinder matchFinder, MapAnimator animator)
+    public MapLogic(MapGrid grid, MapMatchFinder matchFinder, MapAnimator animator,
+        System.Action onLevelCleared = null, System.Action onLevelFailed = null)
     {
         _grid = grid;
         _matchFinder = matchFinder;
         _animator = animator;
+        _onLevelCleared = onLevelCleared;
+        _onLevelFailed = onLevelFailed;
     }
 
     public bool TrySwipe(SwipeableMapBlock block, Vector2Int direction)
@@ -67,6 +72,10 @@ public class MapLogic
         else
         {
             _isBusy = false;
+            if (_grid.IsEmpty())
+                _onLevelCleared?.Invoke();
+            else if (_grid.HasAnyTypeWithCountTwoOrLess())
+                _onLevelFailed?.Invoke();
         }
     }
 

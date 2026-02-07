@@ -49,6 +49,34 @@ public class MapGrid
         return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 
+    public bool IsEmpty()
+    {
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+            if (_blocks[x, y] != null)
+                return false;
+        return true;
+    }
+
+    /// <summary>True, если какой-то тип блоков представлен 2 или менее блоками (невозможно собрать матч из 3).</summary>
+    public bool HasAnyTypeWithCountTwoOrLess()
+    {
+        var countByType = new Dictionary<GameBlockType, int>();
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+        {
+            var block = _blocks[x, y];
+            if (block == null || block.BlockType == GameBlockType.None)
+                continue;
+            var type = block.BlockType;
+            countByType[type] = countByType.TryGetValue(type, out var c) ? c + 1 : 1;
+        }
+        foreach (var count in countByType.Values)
+            if (count <= 2)
+                return true;
+        return false;
+    }
+
     public void SetBlockAt(int x, int y, MapBlock block)
     {
         _blocks[x, y] = block;

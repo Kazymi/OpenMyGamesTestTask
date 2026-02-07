@@ -6,18 +6,19 @@ public class GameMapLoader
 {
     private const float DropDelayPerCell = 0.03f;
 
-    [Inject] private LevelConfiguration _levelConfiguration;
+    [Inject] private LevelProvider _levelProvider;
     [Inject] private LevelBlockConfiguration _blockConfiguration;
     [Inject] private MapController _mapController;
 
     public void LoadMap(Transform parent)
     {
-        if (_levelConfiguration == null || _blockConfiguration == null)
+        var levelConfiguration = _levelProvider?.GetCurrentLevel();
+        if (levelConfiguration == null || _blockConfiguration == null)
             return;
 
         var interval = _blockConfiguration.ObjectInterval;
-        var width = _levelConfiguration.Width;
-        var height = _levelConfiguration.Height;
+        var width = levelConfiguration.Width;
+        var height = levelConfiguration.Height;
         var origin = parent.position;
         var spawnY = origin.y + (height - 1) * interval.y + _blockConfiguration.SpawnHeightAbove;
         var fallDuration = _blockConfiguration.FallDuration;
@@ -28,12 +29,16 @@ public class GameMapLoader
         {
             for (var x = width - 1; x >= 0; x--)
             {
-                var blockType = _levelConfiguration.GetCell(x, y);
+                var blockType = levelConfiguration.GetCell(x, y);
                 if (blockType == GameBlockType.None)
+                {
                     continue;
+                }
                 var prefab = _blockConfiguration.GetPrefab(blockType);
                 if (prefab == null)
+                {
                     continue;
+                }
 
                 var targetPosition = _mapController.GetWorldPosition(x, y);
                 var spawnPosition = new Vector3(targetPosition.x, spawnY, targetPosition.z);
@@ -41,10 +46,16 @@ public class GameMapLoader
                 instance.SetOrder((height - 1 - y) * width + x);
                 _mapController.RegisterBlock(x, y, instance, blockType);
                 if (instance is SwipeableMapBlock swipeable)
+                {
                     swipeable.Init(_mapController);
+                }
 
                 var delay = cellIndex * DropDelayPerCell;
-                instance.transform.DOMove(targetPosition, fallDuration).SetDelay(delay).SetEase(Ease.OutBounce);
+                instance.transform.DOMove(targetPosition, fallDuration).SetDelay(delay).SetEase(Ease.InCubic).OnComplete(
+                    () =>
+                    {
+                        instance.transform.DOShakeScale(0.2f, 0.3f);
+                    });
                 cellIndex++;
             }
         }

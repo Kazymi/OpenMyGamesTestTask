@@ -19,5 +19,5 @@ MonoBehaviour:
     <Prefab>k__BackingField: {fileID: 9093187717114936844, guid: 219315664e80fe24b87009aa5746d7f1, type: 3}
   <ObjectInterval>k__BackingField: {x: 1.57, y: 1.6, z: 0}
   <SpawnHeightAbove>k__BackingField: 10
-  <FallDuration>k__BackingField: 1
+  <FallDuration>k__BackingField: 0.7
   <SwapDuration>k__BackingField: 0.4
