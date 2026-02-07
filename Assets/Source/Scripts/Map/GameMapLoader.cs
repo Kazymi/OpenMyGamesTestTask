@@ -8,7 +8,7 @@ public class GameMapLoader
 
     [Inject] private LevelConfiguration _levelConfiguration;
     [Inject] private LevelBlockConfiguration _blockConfiguration;
-    [Inject] private MapGrid _mapGrid;
+    [Inject] private MapController _mapController;
 
     public void LoadMap(Transform parent)
     {
@@ -21,7 +21,7 @@ public class GameMapLoader
         var origin = parent.position;
         var spawnY = origin.y + (height - 1) * interval.y + _blockConfiguration.SpawnHeightAbove;
         var fallDuration = _blockConfiguration.FallDuration;
-        _mapGrid.Init(width, height, origin, interval, _blockConfiguration.SwapDuration);
+        _mapController.Init(width, height, origin, interval, _blockConfiguration.SwapDuration);
         var cellIndex = 0;
 
         for (var y = height - 1; y >= 0; y--)
@@ -35,13 +35,13 @@ public class GameMapLoader
                 if (prefab == null)
                     continue;
 
-                var targetPosition = _mapGrid.GetWorldPosition(x, y);
+                var targetPosition = _mapController.GetWorldPosition(x, y);
                 var spawnPosition = new Vector3(targetPosition.x, spawnY, targetPosition.z);
                 var instance = Object.Instantiate(prefab, spawnPosition, Quaternion.identity, parent);
                 instance.SetOrder((height - 1 - y) * width + x);
-                _mapGrid.RegisterBlock(x, y, instance);
+                _mapController.RegisterBlock(x, y, instance, blockType);
                 if (instance is SwipeableMapBlock swipeable)
-                    swipeable.Init(_mapGrid);
+                    swipeable.Init(_mapController);
 
                 var delay = cellIndex * DropDelayPerCell;
                 instance.transform.DOMove(targetPosition, fallDuration).SetDelay(delay).SetEase(Ease.OutBounce);

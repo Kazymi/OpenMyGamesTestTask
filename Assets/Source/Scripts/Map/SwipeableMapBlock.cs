@@ -4,13 +4,13 @@ public class SwipeableMapBlock : MapBlock
 {
     private const float SwipeThreshold = 0.35f;
 
-    private MapGrid _mapGrid;
+    private MapController _mapController;
     private Camera _camera;
     private Vector3 _pointerDownWorld;
 
-    public void Init(MapGrid mapGrid)
+    public void Init(MapController mapController)
     {
-        _mapGrid = mapGrid;
+        _mapController = mapController;
         _camera = Camera.main;
     }
 
@@ -48,15 +48,11 @@ public class SwipeableMapBlock : MapBlock
 
     private void OnMouseUp()
     {
-        if (_mapGrid == null)
-        {
+        if (_mapController == null)
             return;
-        }
         var deltaPosition = PointerWorldPosition() - _pointerDownWorld;
         if (TryGetSwipeDirection(deltaPosition, out var direction) == false)
-        {
             return;
-        }
-        _mapGrid.TrySwipe(this, direction);
+        _mapController.TrySwipe(this, direction);
     }
 }

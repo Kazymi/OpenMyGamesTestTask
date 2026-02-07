@@ -19,4 +19,20 @@ public class CoreBlockAnimationController
         _animator.Play(animationType.ToString());
         _animator.speed = randomSpeed ? Random.Range(AnimationSpeedMin, AnimationSpeedMax) : AnimationSpeedMin;
     }
+
+    public float GetAnimationDuration(CoreBlockAnimationType animationType)
+    {
+        var controller = _animator.runtimeAnimatorController;
+        var clips = controller.animationClips;
+        foreach (AnimationClip clip in clips)
+        {
+            if (clip.name == animationType.ToString())
+            {
+                return clip.length;
+            }
+        }
+        
+        Debug.LogWarning($"Анимация с именем '{animationType}' не найдена!");
+        return 0f;
+    }
 }
