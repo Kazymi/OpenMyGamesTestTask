@@ -18,7 +18,12 @@ public class MapAnimator
     private Tween AnimateTo(MapBlock block, int x, int y)
     {
         //Сюда можно добавьть дом анимки к свайпу, к примеру если это падение баунс, если свайп, то кубик
-        return block.transform.DOMove(_grid.GetWorldPosition(x, y), _moveDuration);
+        if (block == null)
+        {
+            return DOTween.Sequence();
+        }
+        return block.transform.DOMove(_grid.GetWorldPosition(x, y), _moveDuration).SetAutoKill(true)
+            .SetTarget(block.gameObject);
     }
 
     public void SwapAndAnimate(Vector2Int from, Vector2Int to, TweenCallback onComplete)
@@ -74,7 +79,7 @@ public class MapAnimator
             raiseSequence.AppendInterval(DestroyDelayPerBlock);
             raiseSequence.AppendCallback(() => block.RaiseMatched(TryFinish));
         }
-        
+
         void TryFinish()
         {
             pending--;
@@ -82,6 +87,7 @@ public class MapAnimator
             {
                 return;
             }
+
             onComplete(count);
         }
     }

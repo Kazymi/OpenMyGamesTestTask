@@ -16,12 +16,20 @@ public class CoreBlockAnimationController
 
     public void Play(CoreBlockAnimationType animationType, bool randomSpeed = false)
     {
+        if (_animator == null)
+        {
+            return;
+        }
         _animator.Play(animationType.ToString());
         _animator.speed = randomSpeed ? Random.Range(AnimationSpeedMin, AnimationSpeedMax) : AnimationSpeedMin;
     }
 
     public float GetAnimationDuration(CoreBlockAnimationType animationType)
     {
+        if (_animator == null)
+        {
+            return 0;
+        }
         var controller = _animator.runtimeAnimatorController;
         var clips = controller.animationClips;
         foreach (AnimationClip clip in clips)

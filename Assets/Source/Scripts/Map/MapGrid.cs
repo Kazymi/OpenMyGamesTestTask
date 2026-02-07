@@ -91,6 +91,10 @@ public class MapGrid
     {
         foreach (var block in blocks)
         {
+            if (block == null)
+            {
+                continue;
+            }
             var position = block.GridPosition;
             _blocks[position.x, position.y] = null;
             GameObject.Destroy(block.gameObject);
