@@ -15,14 +15,14 @@ public class MapAnimator
         _moveDuration = moveDuration;
     }
 
-    private Tween AnimateTo(MapBlock block, int x, int y)
+    private Tween AnimateTo(MapBlock block, int x, int y, Ease ease = Ease.Linear)
     {
         //Сюда можно добавьть дом анимки к свайпу, к примеру если это падение баунс, если свайп, то кубик
         if (block == null)
         {
             return DOTween.Sequence();
         }
-        return block.transform.DOMove(_grid.GetWorldPosition(x, y), _moveDuration).SetAutoKill(true)
+        return block.transform.DOMove(_grid.GetWorldPosition(x, y), _moveDuration).SetEase(ease).SetAutoKill(true)
             .SetTarget(block.gameObject);
     }
 
@@ -54,7 +54,7 @@ public class MapAnimator
         var sequence = DOTween.Sequence();
         foreach (var (block, x, y) in moves)
         {
-            sequence.Join(AnimateTo(block, x, y));
+            sequence.Join(AnimateTo(block, x, y, Ease.InCubic));
         }
 
         if (sequence.Duration() > 0f)

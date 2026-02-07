@@ -38,15 +38,15 @@ public class MapLogic
 
     private void OnSwipeAnimationComplete()
     {
-        FindAndProcessMatches(ApplyGravityAfterMatch);
+        _animator.ApplyGravity(OnLandedAfterSwipe);
     }
 
-    private void ApplyGravityAfterMatch(int removedCount)
+    private void OnLandedAfterSwipe()
     {
-        _animator.ApplyGravity(OnGravityComplete);
+        FindAndProcessMatches(OnMatchesProcessed);
     }
 
-    private void OnGravityComplete()
+    private void OnLandedAfterMatch()
     {
         FindAndProcessMatches(OnMatchesProcessed);
     }
@@ -55,7 +55,7 @@ public class MapLogic
     {
         if (removedCount > 0)
         {
-            _animator.ApplyGravity(OnGravityComplete);
+            _animator.ApplyGravity(OnLandedAfterMatch);
         }
     }
 
