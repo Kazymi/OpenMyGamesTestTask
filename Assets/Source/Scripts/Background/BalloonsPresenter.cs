@@ -39,9 +39,11 @@ public class BalloonsPresenter : Presenter<BalloonsView>, IInitializable
     {
         var balloon = _pool.Pull();
         balloon.Initialize();
-        var startX = Random.Range(View.MinX(), View.MaxX());
+        var leftToRight = Random.value >= 0.5f;
+        var startX = leftToRight ? View.MinX() : View.MaxX();
+        var endX = leftToRight ? View.MaxX() : View.MinX();
         var startY = Random.Range(View.MinY, View.MaxY);
         var speed = Random.Range(MinSpeed, MaxSpeed);
-        View.SetupBalloon(balloon, startX, startY, speed);
+        View.SetupBalloon(balloon, startX, endX, startY, speed);
     }
 }

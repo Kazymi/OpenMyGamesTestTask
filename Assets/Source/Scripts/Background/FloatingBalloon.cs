@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class FloatingBalloon : MonoPooled
 {
     private const int PathSegments = 60;
-    private const float DefaultAmplitude = 0.3f;
+    private const float DefaultAmplitude = 1f;
     private const float DefaultFrequency = 1.5f;
     
     [SerializeField] private SpriteRenderer _spriteRenderer;
@@ -20,20 +20,20 @@ public class FloatingBalloon : MonoPooled
     private Tween _scaleTween;
     private Tween _moveTween;
 
-    public void Setup(float startX, float startY, float speed, float topBound,
+    public void Setup(float startX, float endX, float startY, float speed,
         Action<FloatingBalloon> onExited)
     {
         _onExited = onExited;
         _spriteRenderer.sprite = _balloonSprites[Random.Range(0, _balloonSprites.Length)];
         _moveTween?.Kill();
-        var travelHeight = topBound - startY;
-        var duration = travelHeight / speed;
+        var travelWidth = endX - startX;
+        var duration = Mathf.Abs(travelWidth) / speed;
         var waypoints = new Vector3[PathSegments + 1];
         for (var i = 0; i <= PathSegments; i++)
         {
             var pathProgress = (float)i / PathSegments;
-            var y = startY + pathProgress * travelHeight;
-            var x = startX + DefaultAmplitude * Mathf.Sin(pathProgress * Mathf.PI * 2f * DefaultFrequency);
+            var x = startX + pathProgress * travelWidth;
+            var y = startY + DefaultAmplitude * Mathf.Sin(pathProgress * Mathf.PI * 2f * DefaultFrequency);
             waypoints[i] = new Vector3(x, y, transform.position.z);
         }
 

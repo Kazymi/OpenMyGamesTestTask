@@ -1261,9 +1261,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <BalloonPrefab>k__BackingField: {fileID: 5861592462305360950, guid: 03910b6734fdd044d8f650f466691808, type: 3}
   <BalloonParetTransform>k__BackingField: {fileID: 1001360901}
-  _marginFromEdge: 2
-  _minY: -3
-  _maxY: 0
+  _marginFromEdge: -4
+  _minY: 0
+  _maxY: 8
 --- !u!1 &1617268322
 GameObject:
   m_ObjectHideFlags: 0

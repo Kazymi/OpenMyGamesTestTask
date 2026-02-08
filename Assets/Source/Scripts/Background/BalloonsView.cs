@@ -47,7 +47,7 @@ public class BalloonsView : MonoBehaviour, IPresenterView
         var zPosition = Mathf.Abs(_camera.transform.position.z);
         _leftBound = _camera.ViewportToWorldPoint(new Vector3(0f, 0.5f, zPosition)).x + _marginFromEdge;
         _rightBound = _camera.ViewportToWorldPoint(new Vector3(1f, 0.5f, zPosition)).x - _marginFromEdge;
-        _topBound = _camera.ViewportToWorldPoint(new Vector3(0.5f, 1f, zPosition)).y - _marginFromEdge;
+        _topBound = _camera.ViewportToWorldPoint(new Vector3(0.5f, 1f, zPosition)).y;
     }
 
     private void Awake()
@@ -60,9 +60,9 @@ public class BalloonsView : MonoBehaviour, IPresenterView
         _onBalloonExited = onBalloonExited;
     }
 
-    public void SetupBalloon(FloatingBalloon balloon, float startX, float startY, float speed)
+    public void SetupBalloon(FloatingBalloon balloon, float startX, float endX, float startY, float speed)
     {
         EnsureBounds();
-        balloon.Setup(startX, startY, speed, _topBound, _onBalloonExited);
+        balloon.Setup(startX, endX, startY, speed, _onBalloonExited);
     }
 }
