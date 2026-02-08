@@ -8,9 +8,7 @@ public class GameplayStateSnapshot
     public int Width;
     public int Height;
     public int[] Grid;
-
-    public GameplayStateSnapshot() { }
-
+    
     public GameplayStateSnapshot(int levelIndex, int width, int height, int[] grid)
     {
         LevelIndex = levelIndex;
