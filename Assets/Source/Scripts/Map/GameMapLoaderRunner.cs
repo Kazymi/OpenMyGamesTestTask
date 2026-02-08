@@ -26,17 +26,6 @@ public class GameMapLoaderRunner : MonoBehaviour
         _mapController.OnLevelFailed -= OnLevelFailed;
     }
 
-    public bool LoadNextLevel()
-    {
-        if (_levelProvider.AdvanceToNextLevel() == false)
-        {
-            return false;
-        }
-        ClearMap();
-        _gameMapLoader.LoadMap(_mapStartPositionTransform);
-        return true;
-    }
-
     public void LoadCurrentLevel()
     {
         ClearMap();

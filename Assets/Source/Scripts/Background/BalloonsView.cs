@@ -4,6 +4,7 @@ using UnityEngine;
 public class BalloonsView : MonoBehaviour, IPresenterView
 {
     [field: SerializeField] public GameObject BalloonPrefab { get; private set; }
+    [field: SerializeField] public Transform BalloonParetTransform { get; private set; }
     [SerializeField] private float _marginFromEdge = 2f;
     [SerializeField] private float _minY = -3f;
     [SerializeField] private float _maxY = 3f;

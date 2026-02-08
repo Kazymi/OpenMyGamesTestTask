@@ -45,15 +45,14 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
         _mapController.OnLevelFailed -= OnLevelFailed;
     }
 
-    public bool LoadNextLevel()
+    public void LoadNextLevel()
     {
         if (_levelProvider.AdvanceToNextLevel() == false)
         {
-            return false;
+            _levelProvider.ResetToFirstLevel();
         }
         _gameMapLoader.LoadMap(View.MapStartPositionTransform);
         _loadSaveService.SaveCurrentState();
-        return true;
     }
 
     public void LoadCurrentLevel()

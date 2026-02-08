@@ -20,7 +20,7 @@ public class BalloonsPresenter : Presenter<BalloonsView>, IInitializable
     public void Initialize()
     {
         var factory = _container.Instantiate<FactoryMonoDIObject<FloatingBalloon>>();
-        factory.Initialize(View.BalloonPrefab, View.transform);
+        factory.Initialize(View.BalloonPrefab, View.BalloonParetTransform);
         _pool = new Pool<FloatingBalloon>(factory);
         View.SetBalloonExitedCallback(OnBalloonExited);
         for (var i = 0; i < MaxBalloonsOnScreen; i++)
