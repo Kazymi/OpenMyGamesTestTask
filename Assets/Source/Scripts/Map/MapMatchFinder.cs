@@ -6,8 +6,6 @@ using UnityEngine;
 public class MapMatchFinder
 {
     private const int MinMatchLength = 3;
-    private const int NeighborsCount = 4;
-    private readonly (int dx, int dy)[] Neighbors = { (0, 1), (1, 0), (0, -1), (-1, 0) };
 
     public HashSet<MapBlock> FindMatches(int width, int height, Func<int, int, MapBlock> getBlock)
     {
@@ -21,55 +19,7 @@ public class MapMatchFinder
             }
         }
 
-        return ExpandToConnectedRegions(lineMatches, width, height, getBlock);
-    }
-
-    //Собирает всю связную область одного типа для каждого блока из матча (по соседям того же типа)
-    private HashSet<MapBlock> ExpandToConnectedRegions(HashSet<MapBlock> lineMatches, int width, int height,
-        Func<int, int, MapBlock> getBlock)
-    {
-        var result = new HashSet<MapBlock>();
-        var processed = new HashSet<MapBlock>();
-
-        foreach (var start in lineMatches)
-        {
-            if (processed.Contains(start))
-                continue;
-
-            var blockType = start.BlockType;
-            var queue = new Queue<MapBlock>();
-            queue.Enqueue(start);
-            processed.Add(start);
-            result.Add(start);
-
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                var position = current.GridPosition;
-
-                for (var i = 0; i < NeighborsCount; i++)
-                {
-                    var nextX = position.x + Neighbors[i].dx;
-                    var nextY = position.y + Neighbors[i].dy;
-                    if (IsInside(nextX, nextY, width, height) == false)
-                    {
-                        continue;
-                    }
-
-                    var neighbor = getBlock(nextX, nextY);
-                    if (neighbor == null || neighbor.BlockType != blockType || processed.Contains(neighbor))
-                    {
-                        continue;
-                    }
-
-                    processed.Add(neighbor);
-                    result.Add(neighbor);
-                    queue.Enqueue(neighbor);
-                }
-            }
-        }
-
-        return result;
+        return lineMatches;
     }
 
     private void CollectMatch(int startX, int startY, int width, int height, int dx, int dy,
