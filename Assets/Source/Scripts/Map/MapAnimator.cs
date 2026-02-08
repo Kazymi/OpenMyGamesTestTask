@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MapAnimator
 {
-    private const float DestroyDelayPerBlock = 0.1f;
+    private const float DestroyDelayPerBlock = 0f;
 
     private readonly MapGrid _grid;
     private readonly float _moveDuration;
