@@ -20,7 +20,7 @@ public class MapGrid
         _blocks = new MapBlock[Width, Height];
     }
 
-    public void RegisterBlock(int x, int y, MapBlock block, GameBlockType blockType)
+    public void RegisterBlock(int x, int y, MapBlock block, string blockType)
     {
         if (IsInBounds(x, y) == false)
         {
@@ -68,13 +68,13 @@ public class MapGrid
     //Вроде как стандартная практика в матч играх, но не уверен поэтому TODO
     public bool HasAnyTypeWithCountTwoOrLess()
     {
-        var countByType = new Dictionary<GameBlockType, int>();
+        var countByType = new Dictionary<string, int>();
         for (var x = 0; x < Width; x++)
         {
             for (var y = 0; y < Height; y++)
             {
                 var block = _blocks[x, y];
-                if (block == null || block.BlockType == GameBlockType.None)
+                if (block == null || string.IsNullOrEmpty(block.BlockType))
                 {
                     continue;
                 }
@@ -144,15 +144,15 @@ public class MapGrid
         }
     }
 
-    public int[] GetSnapshotGrid()
+    public string[] GetSnapshotGrid()
     {
-        var result = new int[Width * Height];
+        var result = new string[Width * Height];
         for (var x = 0; x < Width; x++)
         {
             for (var y = 0; y < Height; y++)
             {
                 var block = _blocks[x, y];
-                result[y * Width + x] = block == null ? (int)GameBlockType.None : (int)block.BlockType;
+                result[y * Width + x] = block == null ? "" : block.BlockType;
             }
         }
         return result;

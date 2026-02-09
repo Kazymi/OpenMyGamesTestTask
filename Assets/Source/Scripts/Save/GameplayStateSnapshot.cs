@@ -7,23 +7,21 @@ public class GameplayStateSnapshot
     public int LevelIndex;
     public int Width;
     public int Height;
-    public int[] Grid;
-    
-    public GameplayStateSnapshot(int levelIndex, int width, int height, int[] grid)
+    public string[] Grid;
+
+    public GameplayStateSnapshot(int levelIndex, int width, int height, string[] grid)
     {
         LevelIndex = levelIndex;
         Width = width;
         Height = height;
-        Grid = grid ?? Array.Empty<int>();
+        Grid = grid ?? Array.Empty<string>();
     }
 
-    public GameBlockType GetCell(int x, int y)
+    public string GetCell(int x, int y)
     {
         if (x < 0 || x >= Width || y < 0 || y >= Height)
-        {
-            return GameBlockType.None;
-        }
+            return "";
         var index = y * Width + x;
-        return index >= 0 && index < Grid.Length ? (GameBlockType)Grid[index] : GameBlockType.None;
+        return index >= 0 && index < Grid.Length ? Grid[index] ?? "" : "";
     }
 }

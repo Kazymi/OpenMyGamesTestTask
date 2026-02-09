@@ -14,7 +14,7 @@ public class GameMapLoader
     [Inject] private MapController _mapController;
     [Inject] private DiContainer _container;
 
-    private readonly Dictionary<GameBlockType, IPool<MapBlock>> _pools = new();
+    private readonly Dictionary<string, IPool<MapBlock>> _pools = new();
 
     public void LoadMap(Transform parent)
     {
@@ -57,10 +57,8 @@ public class GameMapLoader
             for (var x = level.Width - 1; x >= 0; x--)
             {
                 var type = level.GetCell(x, y);
-                if (type == GameBlockType.None)
-                {
+                if (string.IsNullOrEmpty(type))
                     continue;
-                }
                 SpawnBlock(type, x, y, spawnY, cellIndex, level.Width, level.Height, parent);
                 cellIndex++;
             }
@@ -76,17 +74,15 @@ public class GameMapLoader
             for (var x = snapshot.Width - 1; x >= 0; x--)
             {
                 var type = snapshot.GetCell(x, y);
-                if (type == GameBlockType.None)
-                {
+                if (string.IsNullOrEmpty(type))
                     continue;
-                }
                 SpawnBlock(type, x, y, spawnY, cellIndex, snapshot.Width, snapshot.Height, parent);
                 cellIndex++;
             }
         }
     }
 
-    private void SpawnBlock(GameBlockType type, int x, int y, float spawnY, int cellIndex,
+    private void SpawnBlock(string type, int x, int y, float spawnY, int cellIndex,
         int width, int height, Transform parent)
     {
         var block = GetBlockFromPool(type, parent);
@@ -99,7 +95,7 @@ public class GameMapLoader
         AnimateBlockDrop(block, targetPosition, cellIndex);
     }
 
-    private MapBlock GetBlockFromPool(GameBlockType type, Transform parent)
+    private MapBlock GetBlockFromPool(string type, Transform parent)
     {
         if (_pools.TryGetValue(type, out var pool))
         {
@@ -110,7 +106,7 @@ public class GameMapLoader
         return pool.Pull();
     }
 
-    private IPool<MapBlock> CreatePool(GameBlockType type, Transform parent)
+    private IPool<MapBlock> CreatePool(string type, Transform parent)
     {
         var prefab = _blockConfiguration.GetPrefab(type);
         var factory = _container.Instantiate<FactoryMonoDIObject<MapBlock>>();
@@ -118,7 +114,7 @@ public class GameMapLoader
         return new Pool<MapBlock>(factory);
     }
 
-    private void SetupBlock(MapBlock block, GameBlockType type, int x, int y,
+    private void SetupBlock(MapBlock block, string type, int x, int y,
         int width, int height, Vector3 spawnPosition)
     {
         DOTween.Kill(block.gameObject);

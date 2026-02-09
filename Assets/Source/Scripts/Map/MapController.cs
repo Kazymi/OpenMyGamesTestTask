@@ -44,7 +44,7 @@ public class MapController
         }
     }
 
-    public void RegisterBlock(int x, int y, MapBlock block, GameBlockType blockType)
+    public void RegisterBlock(int x, int y, MapBlock block, string blockType)
     {
         _grid.RegisterBlock(x, y, block, blockType);
     }
@@ -64,8 +64,8 @@ public class MapController
         return _logic.IsBlockLocked(block);
     }
 
-    public (int width, int height, int[] grid) GetGridStateSnapshot()
+    public (int width, int height, string[] grid) GetGridStateSnapshot()
     {
-        return _grid == null ? (0, 0, null) : (_grid.Width, _grid.Height, _grid.GetSnapshotGrid());
+        return _grid == null ? (0, 0, (string[])null) : (_grid.Width, _grid.Height, _grid.GetSnapshotGrid());
     }
 }

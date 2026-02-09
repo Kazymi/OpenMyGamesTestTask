@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: LevelBlockConfiguration
   m_EditorClassIdentifier: 
   _blocks:
-  - <BlockType>k__BackingField: 2
+  - <BlockType>k__BackingField: Fire
     <Prefab>k__BackingField: {fileID: 4851193516192665653, guid: 2f48155735636e2479a86eb0f789f125, type: 3}
-  - <BlockType>k__BackingField: 1
+  - <BlockType>k__BackingField: Water
     <Prefab>k__BackingField: {fileID: 9093187717114936844, guid: 219315664e80fe24b87009aa5746d7f1, type: 3}
   <ObjectInterval>k__BackingField: {x: 1.57, y: 1.6, z: 0}
   <SpawnHeightAbove>k__BackingField: 10

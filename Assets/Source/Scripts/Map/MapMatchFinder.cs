@@ -76,7 +76,7 @@ public class MapMatchFinder
         Func<int, int, MapBlock> getBlock, HashSet<MapBlock> matched)
     {
         var startBlock = getBlock(startX, startY);
-        if (startBlock == null || startBlock.BlockType == GameBlockType.None)
+        if (startBlock == null || string.IsNullOrEmpty(startBlock.BlockType))
         {
             return;
         }

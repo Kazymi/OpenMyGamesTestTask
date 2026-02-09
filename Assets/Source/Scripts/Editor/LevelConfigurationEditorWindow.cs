@@ -8,7 +8,7 @@ public class LevelConfigurationEditorWindow : EditorWindow
     SerializedProperty _widthProperty;
     SerializedProperty _heightProperty;
     SerializedProperty _gridProperty;
-    GameBlockType _selectedBlockType = GameBlockType.Fire;
+    string _selectedBlockType = "Fire";
     const float CellSize = 48f;
 
     [MenuItem("Window/Level Configuration Editor")]
@@ -65,7 +65,7 @@ public class LevelConfigurationEditorWindow : EditorWindow
         _serializedConfiguration.Update();
 
         EditorGUILayout.Space(8f);
-        _selectedBlockType = (GameBlockType)EditorGUILayout.EnumPopup("Тип блока", _selectedBlockType);
+        _selectedBlockType = EditorGUILayout.TextField("Тип блока", _selectedBlockType);
 
         int width = _widthProperty.intValue;
         int height = _heightProperty.intValue;
@@ -98,14 +98,12 @@ public class LevelConfigurationEditorWindow : EditorWindow
             {
                 int index = y * width + x;
                 Rect cell = new Rect(area.x + x * CellSize, area.y + y * CellSize, CellSize - 2f, CellSize - 2f);
-                GameBlockType current = (GameBlockType)_gridProperty.GetArrayElementAtIndex(index).enumValueIndex;
+                var current = _gridProperty.GetArrayElementAtIndex(index).stringValue;
                 GUI.Box(cell, "");
-                if (current != GameBlockType.None)
-                    GUI.Label(cell, current.ToString(), new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter });
+                if (string.IsNullOrEmpty(current) == false)
+                    GUI.Label(cell, current, new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter });
                 if (GUI.Button(cell, "", GUIStyle.none))
-                {
-                    _gridProperty.GetArrayElementAtIndex(index).enumValueIndex = (int)_selectedBlockType;
-                }
+                    _gridProperty.GetArrayElementAtIndex(index).stringValue = _selectedBlockType;
             }
         }
     }

@@ -9,15 +9,15 @@ public class MapBlock : MonoPooled
 
     private int _gridX;
     private int _gridY;
-    private GameBlockType _blockType;
+    private string _blockType;
 
     public Vector2Int GridPosition => new Vector2Int(_gridX, _gridY);
-    public GameBlockType BlockType => _blockType;
+    public string BlockType => _blockType;
 
     //подписка на событие для удаление блока. 
     public event Action<Action> MatchedEvent;
 
-    public void SetBlockType(GameBlockType blockType)
+    public void SetBlockType(string blockType)
     {
         _blockType = blockType;
     }

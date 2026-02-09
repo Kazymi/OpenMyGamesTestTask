@@ -13,13 +13,11 @@ public class LevelBlockConfiguration : ScriptableObject
     [field: SerializeField] public float FallDuration { get; private set; } 
     [field: SerializeField] public float SwapDuration { get; private set; } 
 
-    public MapBlock GetPrefab(GameBlockType blockType)
+    public MapBlock GetPrefab(string blockType)
     {
         var levelBlockData = _blocks.FirstOrDefault(t => t.BlockType == blockType);
         if (levelBlockData != null)
-        {
             return levelBlockData.Prefab;
-        }
         Debug.LogError($"Prefab {blockType} could not be found");
         return null;
     }
