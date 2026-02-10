@@ -10,26 +10,26 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
     private readonly LevelProvider _levelProvider;
     private readonly MapController _mapController;
     private readonly FailScreenPresenter _failScreenPresenter;
-    private readonly LoadSaveService _loadSaveService;
+    private readonly MapSaveService _saveService;
 
     public GameMapLoaderPresenter(GameMapLoaderView view, GameMapLoader gameMapLoader, LevelProvider levelProvider,
-        MapController mapController, FailScreenPresenter failScreenPresenter, LoadSaveService loadSaveService) : base(view)
+        MapController mapController, FailScreenPresenter failScreenPresenter, MapSaveService saveService) : base(view)
     {
         _gameMapLoader = gameMapLoader;
         _levelProvider = levelProvider;
         _mapController = mapController;
         _failScreenPresenter = failScreenPresenter;
-        _loadSaveService = loadSaveService;
+        _saveService = saveService;
     }
 
     public void Initialize()
     {
-        var savedState = _loadSaveService.TryGetSavedState();
+        var savedState = _saveService.TryGetSavedState();
         if (savedState != null)
         {
             _levelProvider.SetLevelIndex(savedState.LevelIndex);
             _gameMapLoader.LoadMapFromSnapshot(savedState, View.MapStartPositionTransform);
-            _loadSaveService.SaveCurrentState();
+            _saveService.SaveCurrentState();
         }
         else
         {
@@ -52,13 +52,13 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
             _levelProvider.ResetToFirstLevel();
         }
         _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-        _loadSaveService.SaveCurrentState();
+        _saveService.SaveCurrentState();
     }
 
     public void LoadCurrentLevel()
     {
         _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-        _loadSaveService.SaveCurrentState();
+        _saveService.SaveCurrentState();
     }
 
     private void OnLevelFailed()
@@ -68,11 +68,11 @@ public class GameMapLoaderPresenter : Presenter<GameMapLoaderView>, IInitializab
 
     private void OnLevelCleared()
     {
-        _loadSaveService.ClearSavedState();
+        _saveService.ClearSavedState();
         if (_levelProvider.AdvanceToNextLevel())
         {
             _gameMapLoader.LoadMap(View.MapStartPositionTransform);
-            _loadSaveService.SaveCurrentState();
+            _saveService.SaveCurrentState();
         }
         else
         {

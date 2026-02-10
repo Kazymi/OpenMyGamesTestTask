@@ -1,13 +1,13 @@
 using System;
 using Zenject;
 
-public class LoadSaveService : IInitializable, IDisposable
+public class MapSaveService : IInitializable, IDisposable
 {
     private readonly GameplayStatePersistence _persistence;
     private readonly MapController _mapController;
     private readonly LevelProvider _levelProvider;
 
-    public LoadSaveService(GameplayStatePersistence persistence, MapController mapController,
+    public MapSaveService(GameplayStatePersistence persistence, MapController mapController,
         LevelProvider levelProvider)
     {
         _persistence = persistence;

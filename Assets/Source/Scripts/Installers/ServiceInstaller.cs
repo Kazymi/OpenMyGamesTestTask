@@ -8,6 +8,6 @@ public class ServiceInstaller : MonoInstaller<ServiceInstaller>
         Container.Bind<GameMapLoader>().AsSingle();
         Container.Bind<GameplayStatePersistence>().AsSingle();
         Container.Bind<SaveLoadService>().AsSingle();
-        Container.BindInterfacesAndSelfTo<LoadSaveService>().AsSingle();
+        Container.BindInterfacesAndSelfTo<MapSaveService>().AsSingle();
     }
 }
